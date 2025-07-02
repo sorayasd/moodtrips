@@ -5,6 +5,9 @@ const path = require('path');
 const app = express();
 const db = new sqlite3.Database('./database.db'); 
 
+
+
+
 app.use(express.static('public'));
 app.use(express.json());
 
@@ -80,7 +83,12 @@ app.get('/api/trip/:id/program', (req, res) => {
 
 
 // Démarrage du serveur
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Serveur lancé sur http://localhost:${PORT}`);
+//const PORT = 3000;
+//app.listen(PORT, () => {
+    //console.log(`Serveur lancé sur http://localhost:${PORT}`);
+//});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Serveur lancé sur le port ${port}`);
 });
