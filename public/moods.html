@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mood sélectionné</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #mood-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.5em;
+      color: #3a3a3a;
+      margin-bottom: 10px;
+    }
+    #mood-description {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      color: #555;
+    }
+    .trip-card {
+      border-radius: 8px;
+      background-color: #f8f8f8;
+      padding: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
+    .trip-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .trip-card h3 {
+      margin: 0 0 8px 0;
+      color: #222;
+      font-family: 'Dancing Script', cursive;
+    }
+    .trip-card p {
+      color: #444;
+      margin-bottom: 10px;
+    }
+    .trip-card a {
+      color: #222;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  </style>
+  <!-- Google Font Dancing Script -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <h1 id="mood-title">Mood</h1>
+  <p id="mood-description"></p>
+
+  <div id="trip-list"></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const moodId = params.get("mood");
+
+    const tripsTexts = {
+      1: [
+        {
+          id: 1,
+          title: "Tokyo, Japon",
+          preview: "Tokyo donne l’impression d’être minuscule au milieu d’un monde immense, mais étrangement vivant. On la pense futuriste, bruyante, saturée de lumières. Pourtant, elle cache des coins de silence. Une ruelle, une lanterne, un jardin zen entre deux tours.",
+          image: "images/Tokyo1.jpg"
+        },
+        {
+          id: 2,
+          title: "Séoul, Corée du Sud",
+          preview: "Séoul vibre fort. D’un côté, les néons de Gangnam, les vitrines, la musique à fond. De l’autre, les palais anciens, les odeurs de barbecue, l’agitation des marchés.",
+          image: "images/seoul1.jpg"
+        },
+        {
+          id: 3,
+          title: "Singapour",
+          preview: "Singapour respire. Entre les tours, les arbres sont immenses, comme s’ils avaient toujours été là. Dans Chinatown ou Little India, les rues changent d’odeur et de rythme en quelques mètres.",
+          image: "images/singapour1.jpg"
+        },
+        {
+          id: 4,
+          title: "Copenhague, Danemark",
+          preview: "À Copenhague, les choses vont doucement. On entend les vélos plus que les voitures. Les canaux brillent même quand le ciel est gris.",
+          image: "images/copenhague1.jpg"
+        }
+      ], 
+      2: [
+        {
+          id: 5,
+          title: "Formentera, Baléares (Espagne)",
+          preview: "Formentera est l’image parfaite d’un été suspendu : plages de sable blanc, eaux turquoise et criques secrètes. La vie y est douce, rythmée par le chant des oiseaux et le clapotis des vagues. Baladez-vous à vélo entre pins et villages charmants, savourez la cuisine locale, et laissez-vous porter par la lenteur insulaire.",
+          image: "images/formentera1.jpg"
+        },
+        {
+          id: 6,
+          title: "Île de Ré, France",
+          preview: "L’Île de Ré séduit par ses villages blancs, ses pistes cyclables au cœur des marais salants et ses plages paisibles. Dégustez des huîtres fraîches, flânez dans les marchés colorés, et profitez d’un été à la fois tranquille et authentique, où le temps semble s’étirer.",
+          image: "images/ilere1.jpg"
+        },
+        {
+          id: 7,
+          title: "San Vicente de la Barquera, Cantabrie (Espagne)",
+          preview: "Ce village de pêcheurs entre montagnes et plages sauvages offre un cadre authentique et apaisant. Promenez-vous dans ses ruelles pavées, goûtez aux spécialités locales, et profitez de la douceur de vivre d’un été au rythme lent, entre nature et traditions.",
+          image: "images/san1.jpg"
+        },
+        {
+          id: 8,
+          title: "Fethiye, Turquie",
+          preview: "Entre mer Égée et montagnes, Fethiye charme par ses eaux limpides et ses marchés colorés. Dégustez les saveurs locales, découvrez les ruines antiques et laissez-vous envelopper par la chaleur méditerranéenne, idéale pour un été placé sous le signe de la détente et de la découverte.",
+          image: "images/fethiye1.jpg"
+        }
+      ],
+      4: [
+    {
+      id: 13,
+      title: "Paris, France",
+      preview: "Flânez dans les ruelles intimistes du Marais ou de Montmartre, entre librairies anciennes et cafés feutrés. Découvrez des passages secrets, des galeries d’art discrètes, et laissez-vous séduire par l’ambiance chaleureuse d’un Paris souvent oublié, où chaque coin raconte une histoire.",
+      image: "images/paris1.jpg"
+    },
+    {
+      id: 14,
+      title: "Londres, Royaume-Uni",
+      preview: "Explorez les quartiers pleins de charme comme Fitzrovia ou Notting Hill, entre librairies indépendantes, marchés colorés et pubs historiques. Imprégnez-vous de l’atmosphère feutrée des cafés littéraires et des rues pavées où le temps semble suspendu.",
+      image: "images/londres1.jpg"
+    },
+    {
+      id: 15,
+      title: "Édimbourg, Écosse",
+      preview: "Découvrez la magie d’Édimbourg, ses ruelles pavées, ses librairies nichées dans des bâtiments anciens, et ses cafés cosy au charme écossais. Flânez dans la vieille ville, laissez-vous envoûter par l’histoire et les petites merveilles cachées à chaque coin de rue.",
+      image: "images/edinburg1.jpg"
+    },
+    {
+      id: 16,
+      title: "Maastricht, Pays-Bas",
+      preview: "Découvrez une librairie unique installée dans une ancienne église gothique, et parcourez les ruelles chargées d’histoire de cette ville où passé et présent se mêlent avec élégance. Un lieu idéal pour les curieux qui aiment s’attarder sur les détails.",
+      image: "images/maastritcht1.jpg"
+    }
+  ],
+  3: [ 
+    {
+      id: 9,
+      title: "Cape May, New Jersey, USA",
+      preview: "Station balnéaire historique au charme victorien, Cape May séduit par ses plages calmes, ses maisons colorées et son atmosphère tranquille. Une escapade parfaite pour ceux qui cherchent le calme en bord de mer sans s’éloigner trop des commodités.",
+      image: "images/capemay1.jpg"
+    },
+    {
+      id: 10,
+      title: "St Ives, Cornouailles, Royaume-Uni",
+      preview: "Charmante ville côtière avec ses plages de sable fin, ses ruelles pittoresques et ses ateliers d’artistes. Un lieu idéal pour se balader au rythme des marées, respirer l’air marin et savourer la douceur de vivre bretonne à l’anglaise.",
+      image: "images/Stives1.jpg"
+    },
+    {
+      id: 11,
+      title: "Bar Harbor, Maine, USA",
+      preview: "Port de pêche tranquille au bord du parc national Acadia, Bar Harbor offre des paysages côtiers sauvages, des sentiers en bord de mer et une atmosphère paisible. Parfait pour se ressourcer entre mer et forêt, loin des foules.",
+      image: "images/maine1.jpg"
+    },
+    {
+      id: 12,
+      title: "La Côte d’Opale, Nord-Pas-de-Calais, France",
+      preview: "Cette côte offre de vastes plages, des falaises impressionnantes et des petits villages de pêcheurs. Loin des foules estivales, elle invite à la contemplation, au silence et à la rencontre avec un littoral authentique.",
+      image: "images/coteopale1.jpg"
+    }
+  ]
+
+
+};
+
+     
+
+    
+    
+
+    // Affiche infos mood 
+    const moodData = {
+      1: {
+        name: "Boussole Inutile",
+        description: "Voyagez au rythme de vos envies, explorez le monde selon vos humeurs."
+      },
+      2: {
+        name: "Slow Summer",
+        description: "Il fait chaud, l'eau est claire, et tout va lentement. Pas de programme, pas d'objectif. Juste des cabanes, du sable, des voix qui s'éloignent et reviennent avec la marée."
+      },
+      3: {
+        name: "Tranquillité côtière",
+        description: "La même sensation que l'on éprouve debout sur une falaise, au bord du monde, face à la mer ou à l'océan. Le vent souffle sur votre visage, l'air sent le sel : cette odeur vive qui fait du bien au système nerveux."
+      },
+       4: {
+    name: "Petites choses cachées",
+    description: "Pour les soucieux du détail, pour celles et ceux qui marchent doucement et qui regardent autour. Ceux qui savent repérer les petits recoins, les librairies discrètes, les cafés à lumière tamisée."
+  }
+
+    };
+
+    const mood = moodData[moodId];
+    if(mood){
+      document.getElementById("mood-title").textContent = mood.name;
+      document.getElementById("mood-description").textContent = mood.description;
+    }
+
+    // Affiche les voyage
+    const trips = tripsTexts[moodId] || [];
+    const container = document.getElementById("trip-list");
+    trips.forEach(trip => {
+      const div = document.createElement("div");
+      div.className = "trip-card";
+      div.innerHTML = `
+        <img src="${trip.image}" alt="${trip.title}" />
+        <h3>${trip.title}</h3>
+        <p>${trip.preview}</p>
+        <a href="trip.html?tripId=${trip.id}">Voir ce voyage</a>
+      `;
+      container.appendChild(div);
+    });
+
+  </script>
+</body>
+</html>

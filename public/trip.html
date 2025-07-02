@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Voyage sélectionné</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; max-width: 700px; margin: auto; }
+    .trip-container {
+      background-color: #f4f4f4;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    h2 {
+      margin-top: 30px;
+      color: #3a3a3a;
+      font-family: 'Dancing Script', cursive;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+      color: #555;
+    }
+    ul li {
+      margin-bottom: 10px;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="trip-container">
+    <h1 id="trip-title">Titre du voyage</h1>
+    <p id="trip-description">Description complète</p>
+    <div id="trip-program"></div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const tripId = parseInt(params.get("tripId"), 10);  
+
+    const tripPrograms = {
+      1: [
+        {
+          day: "Jour 1 : Shibuya & Harajuku",
+          activities: [
+            "Matin : Arrivée à Tokyo. Installation à l'hôtel.",
+            "Après-midi : Explorez le quartier animé de Shibuya, traversez le célèbre carrefour et visitez le Hachiko Statue.",
+            "Soirée : Dirigez-vous vers Harajuku pour découvrir Takeshita Street, un centre de la mode jeune et excentrique."
+          ]
+        },
+        {
+          day: "Jour 2 : Asakusa & Akihabara",
+          activities: [
+            "Matin : Visitez le temple Senso-ji à Asakusa, le plus ancien temple de Tokyo.",
+            "Après-midi : Promenez-vous dans le quartier d'Akihabara, centre de la culture otaku et de l'électronique.",
+            "Soirée : Détendez-vous dans un café à thème ou assistez à un spectacle de robots."
+          ]
+        },
+        {
+          day: "Jour 3 : Odaiba & Roppongi",
+          activities: [
+            "Matin : Prenez le monorail pour Odaiba, une île artificielle avec des centres commerciaux et le Gundam géant.",
+            "Après-midi : Visitez le teamLab Borderless, un musée d'art numérique immersif.",
+            "Soirée : Montez au Tokyo Tower ou au Tokyo Skytree pour une vue panoramique de la ville."
+          ]
+        }
+      ],
+      2: [
+        {
+          day: "Jour 1 : Gyeongbokgung & Bukchon Hanok Village",
+          activities: [
+            "Matin : Visitez le palais Gyeongbokgung, le plus grand des cinq grands palais de Séoul.",
+            "Après-midi : Explorez Bukchon Hanok Village, un quartier traditionnel coréen avec des maisons en hanok.",
+            "Soirée : Détendez-vous dans un café traditionnel ou assistez à une cérémonie du thé."
+          ]
+        },
+        {
+          day: "Jour 2 : Insadong & N Seoul Tower",
+          activities: [
+            "Matin : Promenez-vous dans Insadong, un quartier célèbre pour ses galeries d'art, ses antiquaires et ses salons de thé.",
+            "Après-midi : Visitez le musée national de Corée ou le musée d'art Leeum Samsung.",
+            "Soirée : Montez à la N Seoul Tower pour une vue imprenable sur la ville illuminée."
+          ]
+        },
+        {
+          day: "Jour 3 : Marché de Namdaemun & Myeongdong",
+          activities: [
+            "Matin : Explorez le marché de Namdaemun, le plus ancien et le plus grand marché traditionnel de Corée.",
+            "Après-midi : Faites du shopping à Myeongdong, un quartier animé avec de nombreuses boutiques de mode et de cosmétiques.",
+            "Soirée : Profitez de la cuisine de rue locale, comme les tteokbokki (gâteaux de riz épicés) et les hotteok (crêpes sucrées)."
+          ]
+        }
+      ],
+      3: [
+        {
+          day: "Jour 1 : Marina Bay & Chinatown",
+          activities: [
+            "Matin : Visitez le Marina Bay Sands SkyPark pour une vue panoramique de la ville.",
+            "Après-midi : Explorez le quartier de Chinatown, visitez le Buddha Tooth Relic Temple et le Chinatown Heritage Centre.",
+            "Soirée : Détendez-vous au Gardens by the Bay et assistez au spectacle de lumière et de son Supertree Grove."
+          ]
+        },
+        {
+          day: "Jour 2 : Little India & Kampong Glam",
+          activities: [
+            "Matin : Promenez-vous dans Little India, visitez le Sri Veeramakaliamman Temple et le marché Tekka Centre.",
+            "Après-midi : Explorez Kampong Glam, le quartier malais et musulman, visitez la mosquée du Sultan et le musée du malais.",
+            "Soirée : Dégustez un dîner au marché de nuit de Lau Pa Sat."
+          ]
+        },
+        {
+          day: "Jour 3 : Sentosa Island",
+          activities: [
+            "Matin : Prenez le monorail pour Sentosa Island, visitez Universal Studios Singapore ou l'aquarium S.E.A.",
+            "Après-midi : Détendez-vous sur les plages de Palawan ou Siloso.",
+            "Soirée : Assistez au spectacle Wings of Time, un spectacle nocturne en plein air."
+          ]
+        }
+      ],
+      4: [
+        {
+          day: "Jour 1 : Nyhavn & Strøget",
+          activities: [
+            "Matin : Promenez-vous le long du canal de Nyhavn, admirez les maisons colorées et les bateaux.",
+            "Après-midi : Faites du shopping sur Strøget, la rue commerçante la plus longue d'Europe.",
+            "Soirée : Dînez dans un restaurant traditionnel danois ou dans un café branché."
+          ]
+        },
+        {
+          day: "Jour 2 : Tivoli Gardens & Rosenborg Castle",
+          activities: [
+            "Matin : Visitez les jardins de Tivoli, l'un des plus anciens parcs d'attractions du monde.",
+            "Après-midi : Explorez le château de Rosenborg, qui abrite les joyaux de la couronne danoise.",
+            "Soirée : Assistez à un concert ou à un spectacle au théâtre Royal."
+          ]
+        },
+        {
+          day: "Jour 3 : Christiania & Musée National",
+          activities: [
+            "Matin : Visitez Christiania, une communauté alternative autogérée.",
+            "Après-midi : Explorez le musée national du Danemark pour en savoir plus sur l'histoire et la culture du pays.",
+            "Soirée : Détendez-vous dans un café ou un bar local."
+          ]
+        }
+      ],
+      5: [
+  {
+    day: "Jour 1 : Découverte des plages et villages",
+    activities: [
+      "Matin : Balade à vélo depuis Sant Francesc jusqu’à la plage de Ses Illetes, réputée pour son sable blanc et ses eaux turquoise.",
+      "Midi : Déjeuner dans un restaurant en bord de plage, comme 'Es Molí de Sal'.",
+      "Après-midi : Visite du village de La Savina, petit port charmant. Puis arrêt à la plage de Llevant, plus sauvage et tranquille.",
+      "Soirée : Dîner dans un restaurant local avec cuisine méditerranéenne, ambiance intimiste."
+    ]
+  },
+  {
+    day: "Jour 2 : Nature et farniente",
+    activities: [
+      "Matin : Randonnée ou balade dans la réserve naturelle de Ses Salines, observation des oiseaux et des paysages préservés.",
+      "Midi : Pique-nique ou déjeuner dans un restaurant local.",
+      "Après-midi : Détente sur la plage de Cala Saona, moins fréquentée, parfaite pour la baignade et la contemplation.",
+      "Soirée : Balade au coucher du soleil sur la plage, dîner tranquille."
+    ]
+  },
+  {
+    day: "Jour 3 : Artisanat et marchés",
+    activities: [
+      "Matin : Visite du marché artisanal de La Mola (si c’est un jour d’ouverture).",
+      "Midi : Déjeuner au marché ou dans un restaurant du village.",
+      "Après-midi : Découverte des petites boutiques d’artisans et galeries d’art.",
+      "Soirée : Dernier dîner à Sant Francesc, avec musique live parfois."
+    ]
+  }
+],
+6: [
+  {
+    day: "Jour 1 : Cyclisme et villages typiques",
+    activities: [
+      "Matin : Location de vélos à Saint-Martin-de-Ré, puis balade le long des pistes cyclables vers Ars-en-Ré.",
+      "Midi : Déjeuner dans un café local, spécialités de fruits de mer.",
+      "Après-midi : Visite du port d’Ars-en-Ré, découverte de l’église et des marais salants.",
+      "Soirée : Dîner dans un restaurant avec vue sur le port."
+    ]
+  },
+  {
+    day: "Jour 2 : Plages et nature",
+    activities: [
+      "Matin : Journée plage à La Couarde-sur-Mer ou à Rivedoux-Plage.",
+      "Midi : Pique-nique ou déjeuner dans une cabane ostréicole.",
+      "Après-midi : Balade dans la forêt de pins, visite des petits villages comme Loix.",
+      "Soirée : Dîner dans un restaurant convivial, produits locaux."
+    ]
+  },
+  {
+    day: "Jour 3 : Marchés et culture",
+    activities: [
+      "Matin : Visite du marché de La Rochelle (sur le continent) ou marché de Saint-Martin.",
+      "Midi : Dégustation d’huîtres et spécialités locales.",
+      "Après-midi : Visite du phare des Baleines et balade sur les falaises.",
+      "Soirée : Dernier dîner au bord de l’eau."
+    ]
+  }
+],
+7: [
+  {
+    day: "Jour 1 : Découverte du village et port",
+    activities: [
+      "Matin : Promenade dans le centre historique, visite de l’église Santa María de los Ángeles.",
+      "Midi : Déjeuner dans un restaurant de poissons, spécialité locale.",
+      "Après-midi : Balade le long de la plage de Merón, observation des falaises.",
+      "Soirée : Dîner dans un bar à tapas."
+    ]
+  },
+  {
+    day: "Jour 2 : Nature et randonnée",
+    activities: [
+      "Matin : Randonnée dans le parc naturel des Picos de Europa, à proximité.",
+      "Midi : Pique-nique en pleine nature.",
+      "Après-midi : Visite des jardins de la Quinta Guadalupe.",
+      "Soirée : Dîner dans un restaurant familial."
+    ]
+  },
+  {
+    day: "Jour 3 : Plage et détente",
+    activities: [
+      "Matin : Journée détente sur la plage de Oyambre, protégée et sauvage.",
+      "Midi : Déjeuner dans une cabane de plage.",
+      "Après-midi : Balade au coucher de soleil sur la plage.",
+      "Soirée : Dernier dîner avec spécialités régionales."
+    ]
+  }
+],
+8: [
+  {
+    day: "Jour 1 : Découverte de la ville et port",
+    activities: [
+      "Matin : Visite du vieux port de Fethiye, promenade dans le bazar.",
+      "Midi : Déjeuner dans un restaurant avec vue sur la mer.",
+      "Après-midi : Visite du musée archéologique.",
+      "Soirée : Dîner dans un restaurant traditionnel turc."
+    ]
+  },
+  {
+    day: "Jour 2 : Plages et criques",
+    activities: [
+      "Matin : Excursion en bateau vers les plages de la baie d’Ölüdeniz et la plage de Kabak.",
+      "Midi : Déjeuner dans une taverne de bord de mer.",
+      "Après-midi : Baignade et farniente dans les criques isolées.",
+      "Soirée : Retour en ville, balade nocturne."
+    ]
+  },
+  {
+    day: "Jour 3 : Randonnée et nature",
+    activities: [
+      "Matin : Randonnée sur le sentier Lycien, portion autour de Fethiye.",
+      "Midi : Pique-nique en pleine nature.",
+      "Après-midi : Découverte des tombes lyciennes sculptées dans la roche.",
+      "Soirée : Dernier dîner dans un restaurant avec spécialités locales."
+    ]
+  }
+],
+9: [
+  {
+    day: "Jour 1 : Découverte de la ville historique",
+    activities: [
+      "Matin : Balade dans le centre-ville historique de Cape May, ses maisons victoriennes colorées, et le parc Washington Street Mall.",
+      "Midi : Déjeuner dans un café local, spécialités de fruits de mer.",
+      "Après-midi : Visite du phare de Cape May pour une vue panoramique sur l’océan et la ville.",
+      "Soirée : Dîner dans un restaurant de fruits de mer réputé, comme 'The Lobster House'."
+    ]
+  },
+  {
+    day: "Jour 2 : Plages et nature",
+    activities: [
+      "Matin : Journée détente sur les plages calmes de Cape May, baignade et bronzage.",
+      "Midi : Pique-nique ou déjeuner dans un snack de plage.",
+      "Après-midi : Visite du refuge national de Cape May, idéal pour l’observation des oiseaux migrateurs.",
+      "Soirée : Promenade au coucher du soleil sur la promenade en front de mer."
+    ]
+  },
+  {
+    day: "Jour 3 : Culture et détente",
+    activities: [
+      "Matin : Visite du Emlen Physick Estate, maison historique transformée en musée.",
+      "Midi : Déjeuner dans un café du centre-ville.",
+      "Après-midi : Balade dans les jardins et les boutiques d’artisanat local.",
+      "Soirée : Dîner dans un restaurant cosy avec vue sur la baie."
+    ]
+  }
+],
+10: [
+  {
+    day: "Jour 1 : Découverte de la ville et des plages",
+    activities: [
+      "Matin : Promenade dans les ruelles étroites de St Ives, visite de galeries d’art comme la Tate St Ives.",
+      "Midi : Déjeuner dans un café en bord de mer, spécialités locales de poissons et fruits de mer.",
+      "Après-midi : Détente à la plage de Porthmeor ou promenade le long des falaises.",
+      "Soirée : Dîner dans un restaurant gastronomique, par exemple 'The Loft'."
+    ]
+  },
+  {
+    day: "Jour 2 : Nature et villages voisins",
+    activities: [
+      "Matin : Excursion vers le village de Zennor, visite de l’église et balades côtières.",
+      "Midi : Déjeuner dans un pub local.",
+      "Après-midi : Randonnée le long du sentier côtier South West Coast Path, vues sur l’océan Atlantique.",
+      "Soirée : Retour à St Ives, dîner dans un pub avec musique live."
+    ]
+  },
+  {
+    day: "Jour 3 : Culture et artisanat",
+    activities: [
+      "Matin : Visite du Barbara Hepworth Museum and Sculpture Garden.",
+      "Midi : Déjeuner dans un marché ou café local.",
+      "Après-midi : Flânerie dans les boutiques d’artisanat et galeries.",
+      "Soirée : Dernier dîner au bord de l’eau."
+    ]
+  }
+],
+11: [
+  {
+    day: "Jour 1 : Découverte de Bar Harbor",
+    activities: [
+      "Matin : Balade dans le centre-ville, visite des boutiques artisanales et galeries.",
+      "Midi : Déjeuner dans un restaurant local, spécialités homard.",
+      "Après-midi : Visite du parc national Acadia, balade sur les sentiers côtiers.",
+      "Soirée : Dîner dans un restaurant avec vue sur le port."
+    ]
+  },
+  {
+    day: "Jour 2 : Nature et randonnées",
+    activities: [
+      "Matin : Randonnée au Mont Cadillac pour une vue panoramique sur la mer et les îles.",
+      "Midi : Pique-nique au parc ou déjeuner dans un café.",
+      "Après-midi : Tour en bateau autour des îles et observation de la faune marine.",
+      "Soirée : Promenade au coucher du soleil, dîner dans un pub local."
+    ]
+  },
+  {
+    day: "Jour 3 : Détente et culture locale",
+    activities: [
+      "Matin : Visite du musée Abbe, découverte de la culture locale.",
+      "Midi : Déjeuner dans un restaurant spécialisé en fruits de mer.",
+      "Après-midi : Flânerie dans les jardins botaniques ou spa.",
+      "Soirée : Dernier dîner tranquille dans un restaurant cosy."
+    ]
+  }
+],
+12: [
+  {
+    day: "Jour 1 : Découverte des paysages côtiers",
+    activities: [
+      "Matin : Balade sur les falaises d’Escalles, vues spectaculaires sur la Manche.",
+      "Midi : Déjeuner dans un restaurant de fruits de mer à Wimereux.",
+      "Après-midi : Visite du village de Wissant et détente sur la plage.",
+      "Soirée : Dîner dans une auberge traditionnelle."
+    ]
+  },
+  {
+    day: "Jour 2 : Nature et activités en plein air",
+    activities: [
+      "Matin : Randonnée sur le sentier des Caps, panorama sur la mer et la campagne.",
+      "Midi : Pique-nique ou déjeuner dans un café local.",
+      "Après-midi : Visite du parc naturel régional des Caps et Marais d’Opale.",
+      "Soirée : Dîner au bord de l’eau, ambiance calme."
+    ]
+  },
+  {
+    day: "Jour 3 : Culture et villages",
+    activities: [
+      "Matin : Visite de Boulogne-sur-Mer, son vieux port et sa basilique.",
+      "Midi : Déjeuner dans un restaurant local.",
+      "Après-midi : Flânerie dans les ruelles anciennes, visite d’un musée maritime.",
+      "Soirée : Dernier dîner dans un restaurant typique."
+    ]
+  }
+],
+13: [
+  {
+    day: "Jour 1 : Le Marais & passages couverts",
+    activities: [
+      "Matin : Promenade dans le Marais, découverte de petites librairies comme 'Shakespeare and Company'.",
+      "Midi : Déjeuner dans un café discret, ambiance feutrée.",
+      "Après-midi : Visite des passages couverts (Passage des Panoramas, Galerie Vivienne), boutiques artisanales et salons de thé.",
+      "Soirée : Balade nocturne sur les quais de Seine, dîner dans un bistrot typique."
+    ]
+  },
+  {
+    day: "Jour 2 : Montmartre & quartiers artistiques",
+    activities: [
+      "Matin : Découverte de la Place du Tertre, balade dans les rues pittoresques et galeries d’art.",
+      "Midi : Pause déjeuner dans un café littéraire.",
+      "Après-midi : Visite de la librairie 'Le Monte-en-l’air' et des ateliers d’artistes.",
+      "Soirée : Spectacle dans un petit théâtre ou concert intimiste."
+    ]
+  },
+  {
+    day: "Jour 3 : Quartier Latin & jardins",
+    activities: [
+      "Matin : Flânerie dans le Quartier Latin, librairies anciennes comme 'Librairie Jousseaume'.",
+      "Midi : Déjeuner dans un restaurant à l’ambiance calme.",
+      "Après-midi : Pause dans le jardin du Luxembourg, découverte des ruelles calmes alentour.",
+      "Soirée : Dîner tranquille dans un restaurant discret."
+    ]
+  }
+],
+14: [
+  {
+    day: "Jour 1 : Bloomsbury & Fitzrovia",
+    activities: [
+      "Matin : Visite de la British Library et balade dans les jardins de Bloomsbury.",
+      "Midi : Déjeuner dans un café indépendant.",
+      "Après-midi : Exploration des librairies et galeries d’art à Fitzrovia.",
+      "Soirée : Dîner dans un pub historique."
+    ]
+  },
+  {
+    day: "Jour 2 : Notting Hill & Portobello Road",
+    activities: [
+      "Matin : Balade sur le marché de Portobello Road.",
+      "Midi : Pause déjeuner dans une brasserie locale.",
+      "Après-midi : Découverte des librairies et boutiques vintage du quartier.",
+      "Soirée : Concert ou théâtre local."
+    ]
+  },
+  {
+    day: "Jour 3 : South Bank & quartiers alternatifs",
+    activities: [
+      "Matin : Promenade le long de la South Bank, visite de galeries d’art.",
+      "Midi : Déjeuner dans un café discret.",
+      "Après-midi : Exploration des librairies spécialisées et cafés cachés.",
+      "Soirée : Dîner dans un restaurant intimiste."
+    ]
+  }
+],
+15: [
+  {
+    day: "Jour 1 : Royal Mile & vieille ville",
+    activities: [
+      "Matin : Découverte de la Royal Mile, librairies anciennes et boutiques artisanales.",
+      "Midi : Déjeuner dans un pub traditionnel.",
+      "Après-midi : Visite du Musée national d’Écosse et des ruelles médiévales.",
+      "Soirée : Dîner dans un restaurant cosy."
+    ]
+  },
+  {
+    day: "Jour 2 : New Town & galeries d’art",
+    activities: [
+      "Matin : Balade dans la New Town, visite de galeries d’art contemporain.",
+      "Midi : Déjeuner dans un café branché.",
+      "Après-midi : Découverte de librairies indépendantes.",
+      "Soirée : Spectacle ou concert intimiste."
+    ]
+  },
+  {
+    day: "Jour 3 : Arthur’s Seat & quartiers calmes",
+    activities: [
+      "Matin : Randonnée à Arthur’s Seat pour une vue panoramique.",
+      "Midi : Déjeuner dans un café tranquille.",
+      "Après-midi : Balade dans des quartiers calmes, découverte de petits cafés.",
+      "Soirée : Dîner dans un restaurant intimiste."
+    ]
+  }
+],
+16: [
+  {
+    day: "Jour 1 : Centre historique & librairies",
+    activities: [
+      "Matin : Visite du centre historique, petites librairies et boutiques anciennes.",
+      "Midi : Déjeuner dans un café traditionnel.",
+      "Après-midi : Balade le long de la Meuse et découverte des ruelles pittoresques.",
+      "Soirée : Dîner dans un restaurant avec ambiance chaleureuse."
+    ]
+  },
+  {
+    day: "Jour 2 : Musées & marchés",
+    activities: [
+      "Matin : Visite du Bonnefanten Museum d’art contemporain.",
+      "Midi : Pause au marché local pour déguster des spécialités.",
+      "Après-midi : Flânerie dans les quartiers anciens, découverte de cafés et librairies.",
+      "Soirée : Dîner dans un bistrot."
+    ]
+  },
+  {
+    day: "Jour 3 : Nature & détente",
+    activities: [
+      "Matin : Balade dans le parc naturel de Hoge Kempen à proximité.",
+      "Midi : Pique-nique ou déjeuner dans un restaurant local.",
+      "Après-midi : Détente dans un café avec terrasse.",
+      "Soirée : Dernier dîner dans un restaurant cosy."
+    ]
+  }
+]
+    };
+
+    fetch(`/api/trip/${tripId}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Erreur réseau");
+        return res.json();
+      })
+      .then(trip => {
+        document.getElementById("trip-title").textContent = trip.title;
+        document.getElementById("trip-description").textContent = trip.description;
+
+        if(tripPrograms[tripId]){
+          let htmlProgram = "";
+          tripPrograms[tripId].forEach(day => {
+            htmlProgram += `<h2>${day.day}</h2><ul>`;
+            day.activities.forEach(act => {
+              htmlProgram += `<li>${act}</li>`;
+            });
+            htmlProgram += `</ul>`;
+          });
+          document.getElementById("trip-program").innerHTML = htmlProgram;
+        }
+      })
+      .catch(err => {
+        document.getElementById("trip-title").textContent = "Erreur";
+        document.getElementById("trip-description").textContent = "Impossible de récupérer les détails du voyage.";
+      });
+  </script>
+</body>
+</html>
